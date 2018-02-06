@@ -1,20 +1,20 @@
 #Count 1 to 10
 def count():
-    for i in range(1,11):
+    for i in range(1, 11):
         print(i)
 #Count User prompt
-def countUser(start,end):
+def count_user(start, end):
     for i in range(start,end+1):
         print(i)
 #countUser(int(input("Start From: ")),int(input("End on: ")))
 #Count Odd Numbers
-def CountOdd(start,end):
+def count_odd(start, end):
     if (start%2==0):
         start+=1
     for i in range(start,end,2):
         print(i)
 #Coin counting
-def coinCounting():
+def coin_counting():
     coins=0
     def getCoin():
         userInput=input("Do you want a coin(Yes/No) ").upper()
