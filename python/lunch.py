@@ -4,7 +4,7 @@ Allow the user to track where they went to lunch.
 """
 import shelve
 import os
-
+from operator import itemgetter
 print(" Starting lunch traker")
 """
 Opening Save File
@@ -63,10 +63,7 @@ def main_menu():
               "\t==========================================\n"
               "\t0: to quit.\n"
                "\t1: to manage restaurants.")
-        for i in range(len(restaurants)):
-            name = sorted_restaurants[i]
-            print(f"\t{i+2}: {name} visited {restaurants[name]}")
-
+        display_resuarants()
         user_input = input(f"\tI would like to: ")
         if vaildate_input(user_input, 0, len(restaurants)+1):
             user_choice = int(user_input)
@@ -124,6 +121,7 @@ def main_menu():
 def managment_menu():
     managing = True
     global restaurants
+    global sort_type
     while managing:
         clear()
         print(f"\tWhat would you like to do?\n"
@@ -132,52 +130,87 @@ def managment_menu():
                "\t1: change sorting to sort by most visited.\n"
                "\t2: change sorting to sort by least visited.\n"
                "\t3: delete a restaurant.\n"
-               "\t4: add a restaurant.")
+               "\t4: add a restaurant.\n"
+               "\t5: go back.")
         user_input = input("I would like to: ")
-        if not vaildate_input(user_input, 0, 4):
-                print(f"\tPlease select either 0 it delete a restaurant or\n"
-                        "\t1 to add a restaurant. Hit enter to continue")
+        if not vaildate_input(user_input, 0, 5):
+                print(f"\tPlease select either 0 through 2 it change sorting,\n"
+                        "\t3 to delete a restaurant, or 4 to add a restaurant.\n"
+                        "\t Hit enter to continue.")
                 input()
                 continue
         else:
             user_choice = int(user_input)
+        if user_choice == 0:
+            sort_type = 0
+            sort()
+        if user_choice == 1:
+            sort_type = 1
+            sort()
+        if user_choice == 2:
+            sort_type = 2
+            sort()
         if user_choice == 3:
             remove_restaurant()
+        if user_choice == 4:
+            add_restuarant()
+        if user_choice == 5:
+            managing = False
 def sort():
     global sorted_restaurants
+    sorted_restaurants = []
     if sort_type == 0:
         sorted_restaurants = sorted(restaurants.keys())
     if sort_type == 1:
-        reverse_restaurants = reverse_dict(restaurants)
-        sorted_revrse_restaurants = sorted(reverse_restaurants.keys())
-        sorted_restaurants = []
-        for key in sorted_revrse_restaurants:
-            sorted_restaurants.append(reverse_restaurants[key])
+        sorted_restaurants_tuples = sorted(restaurants.items(), key=itemgetter(1))
+        for item in sorted_restaurants_tuples:
+            sorted_restaurants.append(item[0])
     if sort_type == 2:
-        reverse_restaurants = reverse_dict(restaurants)
-        sorted_revrse_restaurants = sorted(reverse_restaurants.keys(),)
-        sorted_restaurants = []
-        for key in sorted_revrse_restaurants:
-            sorted_restaurants.append(reverse_restaurants[key], reverse=True)
-def reverse_dict(dictionary):
-    reversed_dict = {}
-    for item in dictionary:
-        reversed_dict[dictionary[item]] = item
-
-    return reversed_dict
+        sorted_restaurants_tuples = sorted(restaurants.items(), key=itemgetter(1), reverse=True)
+        for item in sorted_restaurants_tuples:
+            sorted_restaurants.append(item[0])
 
 def vaildate_input(target, min_value, max_value):
-    return target.isnumeric() and (min_value < int(target) < max_value)
+    return target.isnumeric() and (min_value <= int(target) <= max_value)
 
 def remove_restaurant():
+    choosing = True
+    while choosing:
+        clear()
+        print("\tWhich restaurant would you like to delete?\n"
+              "\t=========================================="
+              "\t0:Go back to previous menu")
+        display_resuarants()
+        user_input = input(f"\tI would like to delete: ")
+        if vaildate_input(user_input, 0, len(restaurants)):
+            user_choice = int(user_input)
+        else:
+            print(f"\t{user_input} is invaild please select again.\n"
+                    "\tVaild range is 0 through {len(restaurants)}\n"
+                    "\tHit enter to return to the selection menu")
+            input()
+            continue
+        if user_choice == 0:
+            choosing = False
+            continue
+        else:
+            user_choice -= 1
+            del restaurants[sorted_restaurants[user_choice]]
+            sort()
+            print(f"\tRestaurant deleted hit enter to return to the main menu")
+            input()
+            choosing = False
+def add_restuarant():
     clear()
-    print("\tWhich restaurant would you like to delete?\n"
-          "\t==========================================")
+    print(f"\tThe current list is:")
+    display_resuarants()
+    user_input = input(f"\tWhat is the name of the new restaurant? ")
+    restaurants[user_input] = 0
+    sort()
+def display_resuarants():
     for i in range(len(restaurants)):
         name = sorted_restaurants[i]
-        print(f"\t{i}: {name} visited {restaurants[name]}")
-    user_input = input("I would like to delete: ")
-    if vaildate_input(user_input,0,len(restaurants)-1):
-        user_choice = user_input()
-    else 
+        print(f"\t{i+2}: {name} visited {restaurants[name]}")
+
+
 main_menu()
