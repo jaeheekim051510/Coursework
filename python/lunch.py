@@ -16,8 +16,8 @@ storage = shelve.open("lunch")
 
 if "Restaurants" not in storage:
     storage["Restaurants"] = {"Farm Burger":0,
-        "Chipotle":0,
-        "ru san's":0}
+                              "Chipotle":0,
+                              "ru san's":0}
 
 restaurants = storage["Restaurants"]
 
@@ -28,10 +28,10 @@ day = storage["Day"]
 if "Week" not in storage:
     storage["Week"] = 0
 
-week = storage["Week"]
+current_week = storage["Week"]
 
 if "Weeks" not in storage:
-    storage["Weeks"] = {week:{}}
+    storage["Weeks"] = {current_week:{}}
 
 weeks = storage["Weeks"]
 
@@ -47,6 +47,9 @@ sorted_restaurants = storage["sorted_restaurants"]
 
 print(" Defining functions")
 def clear():
+    """
+    Clears the screen in unix based or windows based systems.
+    """
     os.system("cls||clear")
 
 print("    Building menus")
@@ -55,7 +58,7 @@ def main_menu():
     """
     The main menu of the program. Contians all the nessary loops for all menus.
     """
-    global week
+    global current_week
     global day
     running = True
     """
@@ -66,39 +69,43 @@ def main_menu():
         print(f"\tPlease select a Restaurant for {days[day]}:\n"
               "\t==========================================\n"
               "\t0: to quit.\n"
-               "\t1: to manage restaurants.")
-        display_resuarants(2)
+              "\t1: to manage restaurants.")
+        menu_offset = 2
+        display_resuarants(menu_offset)
         user_input = input(f"\tI would like to: ")
 
-        if vaildate_input(user_input, 0, len(restaurants)+1):
+        if vaildate_input(user_input, min_value=0, max_value=len(restaurants)+1):
             user_choice = int(user_input)
 
         else:
-            print(f"\tInvaild input:{user_input}\n"
-                   "\tPlease choose only 0 through {len(restaurant)+2}.\n"
-                   "\tHit enter to return to the main menu")
+            print(f"\tInvaild input:{user_input}")
+            print(f"\tPlease choose only 0 through {len(restaurants)+menu_offset}.\n"
+                  "\tHit enter to return to the main menu")
+            #Holding for user to hit return
             input()
             continue
 
-        if user_choice <= len(restaurants) + 1 and user_choice >= 2:
-            user_choice -= 2
+        if (len(restaurants) + 1) >= user_choice >= menu_offset:
+            user_choice -= menu_offset
             restaurant = sorted_restaurants[user_choice]
-            if restaurant in weeks[week]:
+            if restaurant in weeks[current_week]:
 
-                if weeks[week][restaurant] < 3:
+                if weeks[current_week][restaurant] < 3:
                     restaurants[restaurant] += 1
-                    weeks[week][restaurant] += 1
+                    weeks[current_week][restaurant] += 1
                     next_day()
                     sort()
 
                 else:
-                    print(f"\tI am sorry you have been to {restaurant} {weeks[week][restaurant]} times in a week.\n"
-                           "\tPlease pick another restaurant")
+                    print(f"\tI am sorry you have been to {restaurant}")
+                    print("\t{weeks[current_week][restaurant]} times in a week.\n"
+                          "\tPlease pick another restaurant")
+                    #Holding for user to hit return
                     input(f"\tHit enter to return to selection menu")
                     continue
 
             else:
-                weeks[week][restaurant] = 1
+                weeks[current_week][restaurant] = 1
                 restaurants[restaurant] += 1
                 next_day()
                 sort()
@@ -114,7 +121,7 @@ def main_menu():
             print("Packing up variables")
             storage["Restaurants"] = restaurants
             storage["Day"] = day
-            storage["Week"] = week
+            storage["Week"] = current_week
             storage["Weeks"] = weeks
             storage["Sort Type"] = sort_type
             storage["sorted_restaurants"] = sorted_restaurants
@@ -134,21 +141,22 @@ def managment_menu():
     while managing:
         clear()
         print(f"\tWhat would you like to do?\n"
-               "\t==========================================\n"
-               "\t0: changing sorting to sort by name.\n"
-               "\t1: change sorting to sort by most visited.\n"
-               "\t2: change sorting to sort by least visited.\n"
-               "\t3: delete a restaurant.\n"
-               "\t4: add a restaurant.\n"
-               "\t5: go back.")
+              "\t==========================================\n"
+              "\t0: changing sorting to sort by name.\n"
+              "\t1: change sorting to sort by most visited.\n"
+              "\t2: change sorting to sort by least visited.\n"
+              "\t3: delete a restaurant.\n"
+              "\t4: add a restaurant.\n"
+              "\t5: go back.")
         user_input = input(f"\tI would like to: ")
 
-        if not vaildate_input(user_input, 0, 5):
-                print(f"\tPlease select either 0 through 2 it change sorting,\n"
-                        "\t3 to delete a restaurant, or 4 to add a restaurant.\n"
-                        "\t Hit enter to continue.")
-                input()
-                continue
+        if not vaildate_input(user_input, min_value=0, max_value=5):
+            print(f"\tPlease select either 0 through 2 it change sorting,\n"
+                  "\t3 to delete a restaurant, or 4 to add a restaurant.\n"
+                  "\t Hit enter to continue.")
+                #Holding for user to hit return
+            input()
+            continue
 
         else:
             user_choice = int(user_input)
@@ -157,23 +165,22 @@ def managment_menu():
             sort_type = 0
             sort()
             clear()
-            display_resuarants(0)
-            print(f"\tSort done. Hit enter to continue.")
-            input()
+            display_resuarants()
+            #Holding for user to hit return
+            input(f"\tSort done. Hit enter to continue.")
 
         elif user_choice == 1:
             sort_type = 1
             sort()
             clear()
-            display_resuarants(0)
-            print(f"\tSort done. Hit enter to continue.")
-            input()
+            display_resuarants()
+            input(f"\tSort done. Hit enter to continue.")
 
         elif user_choice == 2:
             sort_type = 2
             sort()
             clear()
-            display_resuarants(0)
+            display_resuarants()
             print(f"\tSort done. Hit enter to continue.")
             input()
 
@@ -196,7 +203,8 @@ def sort():
         sorted_restaurants = sorted(restaurants.keys())
 
     elif sort_type == 1:
-        sorted_restaurants_tuples = sorted(restaurants.items(), key=itemgetter(1))
+        sorted_restaurants_tuples = sorted(restaurants.items(),
+                                           key=itemgetter(1))
 
         for item in sorted_restaurants_tuples:
             sorted_restaurants.append(item[0])
@@ -207,9 +215,10 @@ def sort():
         for item in sorted_restaurants_tuples:
             sorted_restaurants.append(item[0])
 
-def vaildate_input(target, min_value, max_value):
+def vaildate_input(target, min_value=None, max_value=None):
     """
-    vaildates user input to check if it is an integer inclusively bewteen the min and max value.
+    vaildates user input to check if it is an
+    integer inclusively bewteen the min and max value.
     """
     return target.isnumeric() and (min_value <= int(target) <= max_value)
 
@@ -222,16 +231,18 @@ def remove_restaurant():
         clear()
         print("\tWhich restaurant would you like to delete?\n"
               "\t==========================================\n"
-              "\t0:Go back to previous menu")
-        display_resuarants(1)
+              "\t0: Go back to previous menu")
+        menu_offset = 1
+        display_resuarants(offset=menu_offset)
         user_input = input(f"\tI would like to delete: ")
-        if vaildate_input(user_input, 0, len(restaurants)):
+        if vaildate_input(user_input, min_value=0, max_value=len(restaurants)):
             user_choice = int(user_input)
 
         else:
-            print(f"\t{user_input} is invaild please select again.\n"
-                    "\tVaild range is 0 through {len(restaurants)}\n"
-                    "\tHit enter to return to the selection menu")
+            print(f"\t{user_input} is invaild please select again.")
+            print(f"\tVaild range is 0 through {len(restaurants)}\n"
+                  "\tHit enter to return to the selection menu")
+            #Holding for user to hit return
             input()
             continue
 
@@ -240,13 +251,12 @@ def remove_restaurant():
             continue
 
         else:
-            user_choice -= 1
+            user_choice -= menu_offset
             del restaurants[sorted_restaurants[user_choice]]
             sort()
             clear()
-            print(f"\tRestaurant deleted hit enter to return to the previous menu")
-            display_resuarants(0)
-            input()
+            display_resuarants()
+            input(f"\tRestaurant deleted hit enter to return to the previous menu")
             choosing = False
 
 def add_restuarant():
@@ -255,16 +265,16 @@ def add_restuarant():
     """
     clear()
     print(f"\tThe current list is:")
-    display_resuarants(0)
+    display_resuarants()
     user_input = input(f"\tWhat is the name of the new restaurant? ")
     restaurants[user_input] = 0
     sort()
     clear()
     print(f"\t{user_input} added to restaurant list.")
-    display_resuarants(0)
+    display_resuarants()
     input(f"\tHit enter to return to the previous menu.")
 
-def display_resuarants(offset):
+def display_resuarants(offset=0):
     """
     Displays the restuarnts list.
     Takes an integer to set how far the starting number if offset
@@ -278,15 +288,15 @@ def next_day():
     Handles all the nessary variable transtion to move the day forward.
     """
     global day
-    global week
+    global current_week
     global weeks
     if day < 4:
         day += 1
 
     elif day == 4:
         day = 0
-        week += 1
-        weeks[week] = {}
+        current_week += 1
+        weeks[current_week] = {}
 
     else:
         print("Whoops I have had an error {day} is an invaild value.\n"
