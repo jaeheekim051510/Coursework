@@ -50,7 +50,11 @@ def clear():
     os.system("cls||clear")
 
 print("    Building menus")
+
 def main_menu():
+    """
+    The main menu of the program. Contians all the nessary loops for all menus.
+    """
     global week
     global day
     running = True
@@ -65,12 +69,13 @@ def main_menu():
                "\t1: to manage restaurants.")
         display_resuarants(2)
         user_input = input(f"\tI would like to: ")
+
         if vaildate_input(user_input, 0, len(restaurants)+1):
             user_choice = int(user_input)
 
         else:
-            print(f"\tInvaild input:{user_choice}\n"
-                   "\tPlease choose only 0 through {i+2}.\n"
+            print(f"\tInvaild input:{user_input}\n"
+                   "\tPlease choose only 0 through {len(restaurant)+2}.\n"
                    "\tHit enter to return to the main menu")
             input()
             continue
@@ -83,6 +88,7 @@ def main_menu():
                 if weeks[week][restaurant] < 3:
                     restaurants[restaurant] += 1
                     weeks[week][restaurant] += 1
+                    next_day()
                     sort()
 
                 else:
@@ -94,6 +100,7 @@ def main_menu():
             else:
                 weeks[week][restaurant] = 1
                 restaurants[restaurant] += 1
+                next_day()
                 sort()
 
         elif user_choice == 1:
@@ -116,11 +123,11 @@ def main_menu():
             print("Have a wonderful day.")
             running = False
             continue
-        if sum(weeks[week].values()) == 5:
-            week += 1
-            weeks[week] = {}
-            day = 0
+
 def managment_menu():
+    """
+    Menu that allows the user to configure the program.
+    """
     managing = True
     global restaurants
     global sort_type
@@ -135,14 +142,17 @@ def managment_menu():
                "\t4: add a restaurant.\n"
                "\t5: go back.")
         user_input = input(f"\tI would like to: ")
+
         if not vaildate_input(user_input, 0, 5):
                 print(f"\tPlease select either 0 through 2 it change sorting,\n"
                         "\t3 to delete a restaurant, or 4 to add a restaurant.\n"
                         "\t Hit enter to continue.")
                 input()
                 continue
+
         else:
             user_choice = int(user_input)
+
         if user_choice == 0:
             sort_type = 0
             sort()
@@ -150,44 +160,63 @@ def managment_menu():
             display_resuarants(0)
             print(f"\tSort done. Hit enter to continue.")
             input()
-        if user_choice == 1:
+
+        elif user_choice == 1:
             sort_type = 1
             sort()
             clear()
             display_resuarants(0)
             print(f"\tSort done. Hit enter to continue.")
             input()
-        if user_choice == 2:
+
+        elif user_choice == 2:
             sort_type = 2
             sort()
             clear()
             display_resuarants(0)
             print(f"\tSort done. Hit enter to continue.")
             input()
-        if user_choice == 3:
+
+        elif user_choice == 3:
             remove_restaurant()
-        if user_choice == 4:
+
+        elif user_choice == 4:
             add_restuarant()
-        if user_choice == 5:
+
+        elif user_choice == 5:
             managing = False
+
 def sort():
+    """
+    Updates the sorted_restaurants list base on current restuarnts and sort type.
+    """
     global sorted_restaurants
     sorted_restaurants = []
     if sort_type == 0:
         sorted_restaurants = sorted(restaurants.keys())
-    if sort_type == 1:
+
+    elif sort_type == 1:
         sorted_restaurants_tuples = sorted(restaurants.items(), key=itemgetter(1))
+
         for item in sorted_restaurants_tuples:
             sorted_restaurants.append(item[0])
-    if sort_type == 2:
+
+    elif sort_type == 2:
         sorted_restaurants_tuples = sorted(restaurants.items(), key=itemgetter(1), reverse=True)
+
         for item in sorted_restaurants_tuples:
             sorted_restaurants.append(item[0])
 
 def vaildate_input(target, min_value, max_value):
+    """
+    vaildates user input to check if it is an integer inclusively bewteen the min and max value.
+    """
     return target.isnumeric() and (min_value <= int(target) <= max_value)
 
 def remove_restaurant():
+    """
+    The menu that removal of restuarnts from the restaurant list.
+    """
     choosing = True
     while choosing:
         clear()
@@ -198,15 +227,18 @@ def remove_restaurant():
         user_input = input(f"\tI would like to delete: ")
         if vaildate_input(user_input, 0, len(restaurants)):
             user_choice = int(user_input)
+
         else:
             print(f"\t{user_input} is invaild please select again.\n"
                     "\tVaild range is 0 through {len(restaurants)}\n"
                     "\tHit enter to return to the selection menu")
             input()
             continue
+
         if user_choice == 0:
             choosing = False
             continue
+
         else:
             user_choice -= 1
             del restaurants[sorted_restaurants[user_choice]]
@@ -216,7 +248,11 @@ def remove_restaurant():
             display_resuarants(0)
             input()
             choosing = False
+
 def add_restuarant():
+    """
+    Menu for the user to add Restaurants
+    """
     clear()
     print(f"\tThe current list is:")
     display_resuarants(0)
@@ -227,10 +263,34 @@ def add_restuarant():
     print(f"\t{user_input} added to restaurant list.")
     display_resuarants(0)
     input(f"\tHit enter to return to the previous menu.")
+
 def display_resuarants(offset):
+    """
+    Displays the restuarnts list.
+    Takes an integer to set how far the starting number if offset
+    """
     for i in range(len(restaurants)):
         name = sorted_restaurants[i]
         print(f"\t{i+offset}: {name} visited {restaurants[name]}")
+
+def next_day():
+    """
+    Handles all the nessary variable transtion to move the day forward.
+    """
+    global day
+    global week
+    global weeks
+    if day < 4:
+        day += 1
+
+    elif day == 4:
+        day = 0
+        week += 1
+        weeks[week] = {}
+
+    else:
+        print("Whoops I have had an error {day} is an invaild value.\n"
+              "Please contact the developer.")
 
 
 main_menu()
