@@ -1,0 +1,54 @@
+#! /usr/bin/env python3
+import sys
+import collections
+import string
+def read_file(file):
+    with open(file) as open_file:
+        for line in open_file:
+            print(line)
+
+def write_file(file):
+    with open(file, "a") as open_file:
+        writing = True
+        print("Please enter the text you want to write to file.")
+        print("Type end on it's own line to terminate program.")
+        while writing:
+            line = input(":")
+            if line.upper() != "END":
+                line = "\n" + line
+                open_file.write(line)
+            else:
+                writing = False
+                open_file.close()
+def charater_histogram(file):
+    with open(file) as open_file:
+        character_list = []
+        for line in open_file:
+            for ch in line:
+                if ch.lower() in string.ascii_lowercase:
+                    character_list.append(ch.lower())
+        counter = collections.Counter(character_list)
+        sorted_counter = sorted(counter)
+        for value in sorted_counter:
+            print(f"{value}: {counter[value]}")
+def word_histogram(file):
+    word_list = []
+    with open(file) as open_file:
+        for line in open_file:
+            word_list += (line.split())
+        counter = collections.Counter(word_list)
+        sorted_counter = sorted(counter)
+        for word in sorted_counter:
+            print(f"{word}: {counter[word]}")
+"""
+debug section
+"""
+
+if __name__ == "__main__":
+    if len(sys.argv) > 1 and sys.argv[1] == "--test-read":
+        read_file("snofrid.txt")
+    elif len(sys.argv) > 1 and sys.argv[1] == "--test-write":
+        write_file("test.txt")
+    elif len(sys.argv) > 1 and sys.argv[1] == "--test-histogram":
+        charater_histogram("snofrid.txt")
+        word_histogram("snofrid.txt")

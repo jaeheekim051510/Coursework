@@ -49,7 +49,6 @@ def longVowels(input):
 def rot13(input):
     output = ""
     temp = ""
-    debug = 0
     for i in range(len(input)):
         if Terry.isLetter(input[i]):
             case = Terry.getCase(input[i])
