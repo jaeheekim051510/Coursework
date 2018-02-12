@@ -57,7 +57,7 @@ def lookup_entry(search_term):
             print(f"\tEntry found for {search_term} \n\tNumber: {i.number}")
             entry_found = True
     if not entry_found:
-        print(f"{search_term} was not found in the phonebook.\nTry using thier full name.")
+        print(f"{search_term} was not found in the phonebook.\nTry using their full name.")
 
 def create_entry(new_name, new_number):
     person = Contact(new_name, new_number)

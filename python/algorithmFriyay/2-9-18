@@ -1,0 +1,49 @@
+#! /usr/bin/env python3
+import sys
+def smallestDivisible(max_factor):
+    count = max_factor
+    found = False
+    while not found:
+        for number in range(max_factor,1,-1):
+            if count % number == 0:
+                found = True
+            else:
+                found = False
+                count += max_factor
+                break
+    return count
+
+def palidrome_numbers(max_number):
+    number =  max_number
+    palidromes = []
+    for number in range(max_number,999,-1):
+        for number2 in range(number,999,-1):
+            checked_Number = str(number * number2)
+            if checked_Number == checked_Number[::-1]:
+                palidromes.append(number * number2)
+            if checked_Number == "906609":
+                print(number,number2)
+    print(max(palidromes))
+    return max(palidromes)
+
+def beer_print(start):
+    for number in range(start,0,-1):
+        beer = ""
+        if number % 7 == 0:
+            beer += "miller"
+        if number % 5 == 0:
+            beer += " lite"
+        beer += " beer"
+        print(f"{number} Bottles of {beer}, take one down, pass it around, {number - 1} bottles of {beer} on the wall.")
+
+
+if __name__ == "__main__":
+    if len(sys.argv) > 1:
+        if "--test-LCM" in sys.argv:
+            assert smallestDivisible(20) == 232792560,"LCM Failed"
+            assert smallestDivisible(10) == 2520,"LCM Failed"
+        elif "--test-pal" in sys.argv:
+            assert palidrome_numbers(99) == 9009,"palidrome_numbers failed"
+            assert palidrome_numbers(9999) == 906609,"palidrome_numbers failed"
+        elif "--test-beer" in sys.argv:
+            beer_print(99)
