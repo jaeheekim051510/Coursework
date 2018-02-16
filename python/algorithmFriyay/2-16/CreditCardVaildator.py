@@ -2,7 +2,8 @@
 
 
 def isValidNumber(number):
-    pass
+    if number == 6011:
+        return "Discover"
 
 
 assert isValid(6022) == "Discover", "The test failed"
