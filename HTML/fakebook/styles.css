@@ -1,0 +1,115 @@
+/*Base page stuff */
+body{
+  display: flex;
+  flex-direction: column;
+  margin:0;
+  width: 100%;
+  height: 100vh;
+  justify-content:space-between;
+}
+
+header{
+  display: inline-flex;
+  flex-direction: row;
+  justify-content: space-between;
+  background-color: #435F96;
+  color:white;
+  height:82px;
+  min-width: 420px;
+  width: 100%;
+  align-items: center;
+}
+
+header > *{
+  display:inline-flex;
+}
+header > button{
+  background-color: rgba(0, 0, 0, 0);
+  border-color: rgba(0, 0, 0, 0);
+}
+.login {
+  display: inline-flex;
+  flex-direction: row;
+  justify-content: space-around;
+  margin:30px;
+  align-items: center;
+}
+
+.login > *{
+  display: none;
+}
+
+.login > button{
+  display: inline-flex;
+  background-color: #4569AD;
+  height: 30px;
+  text-align: center;
+  line-height: 18px;
+  font-size: 12px;
+  color: white;
+  margin: 5px;
+}
+
+.sprite {
+	background: url('icons.png') no-repeat 0 0;
+	width: 170px;
+	height: 34px;
+  margin: 30px;
+}
+/*Nav Menu Drop down */
+.nav-menu-drop{
+  display: flex;
+  flex-direction: column;
+  background-color: #435F96;
+  width: min-content;
+}
+.nav-menu-drop > ul{
+  display: none;
+  flex-direction:column;
+  width: fit-content;
+  list-style-type: none;
+  padding-left: 3px;
+  padding-right: 3px;
+  justify-content: flex-end;
+}
+.nav-menu-drop li{
+  width: fit-content;
+  margin-left: 5px;
+  margin-right: 5px;
+  color: white;
+}
+.content-body{
+  display: flex;
+  flex-direction: column;
+  flex:1;
+  width: 100%;
+}
+.nav-menu-drop:focus-within{
+  align-self: flex-start;
+  background-color: #71a5ed;
+}
+.nav-menu-drop:focus-within > ul{
+  display: inline-flex;
+
+}
+@media (min-width:768px) {
+  .login > *{
+    display: inline-flex;
+  }
+  .username{
+    display: inline-flex;
+    flex-direction: column;
+    margin: 5px;
+  }
+  .password{
+    display: inline-flex;
+    flex-direction: column;
+    margin: 5px;
+  }
+
+}
+@media (min-width:1200px) {
+  header > button{
+    display: none;
+  }
+}
