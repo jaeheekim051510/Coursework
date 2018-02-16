@@ -77,6 +77,10 @@ main{
   height: 100%;
   border-color: black;
 }
+/*Community information*/
+/* .Community-information{
+
+} */
 /*Nav Menu Drop down */
 .nav-menu-drop{
   display: flex;

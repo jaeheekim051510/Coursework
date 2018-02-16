@@ -14,3 +14,14 @@ h1{
 hr{
   width:100%
 }
+header{
+  display: inline-flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  text-align: center;
+}
+address{
+  margin: 10px;
+}
